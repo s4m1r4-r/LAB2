@@ -23,8 +23,12 @@
   <FILE>LAB2.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <SETUP><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>28</LINE></SETUP>
-  <MAIN_LOOP><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>49</LINE></MAIN_LOOP>
-  <PAUSA><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>56</LINE></PAUSA>
+  <T7S><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>22</LINE></T7S>
+  <SETUP><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>29</LINE></SETUP>
+  <LOOP><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>47</LINE></LOOP>
+  <DB_INC><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>79</LINE></DB_INC>
+  <DB_DEC><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>91</LINE></DB_DEC>
+  <D1><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>81</LINE></D1>
+  <D2><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>93</LINE></D2>
  </LABELS>
 </ASSEMBLER_INFO>
