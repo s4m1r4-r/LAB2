@@ -23,12 +23,19 @@
   <FILE>LAB2.lss</FILE>
  </OUTPUT_FILES>
  <LABELS>
-  <T7S><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>22</LINE></T7S>
-  <SETUP><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>29</LINE></SETUP>
-  <LOOP><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>47</LINE></LOOP>
-  <DB_INC><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>79</LINE></DB_INC>
-  <DB_DEC><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>91</LINE></DB_DEC>
-  <D1><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>81</LINE></D1>
-  <D2><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>93</LINE></D2>
+  <T7S><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>26</LINE></T7S>
+  <SETUP><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>34</LINE></SETUP>
+  <INIT_T0><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>204</LINE></INIT_T0>
+  <LOOP><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>79</LINE></LOOP>
+  <DB_1><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>141</LINE></DB_1>
+  <DB_2><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>150</LINE></DB_2>
+  <CONTAR_NORMAL><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>124</LINE></CONTAR_NORMAL>
+  <LEDS><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>186</LINE></LEDS>
+  <delay1><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>143</LINE></delay1>
+  <INCREMENTAR><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>160</LINE></INCREMENTAR>
+  <delay2><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>152</LINE></delay2>
+  <DECREMENTAR><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>173</LINE></DECREMENTAR>
+  <ALARMA><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>220</LINE></ALARMA>
+  <APAGAR_ALARMA><FILE>C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm</FILE><LINE>229</LINE></APAGAR_ALARMA>
  </LABELS>
 </ASSEMBLER_INFO>

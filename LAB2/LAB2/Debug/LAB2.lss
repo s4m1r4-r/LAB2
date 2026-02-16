@@ -1,10 +1,10 @@
 
-AVRASM ver. 2.2.8  C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm Thu Feb 12 00:37:32 2026
+AVRASM ver. 2.2.8  C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm Sun Feb 15 23:04:19 2026
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328PBdef.inc'
-C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm(10): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\M328PBDEF.inc'
+C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm(12): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\M328PBDEF.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\m328PBdef.inc'
-C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm(10): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\M328PBDEF.inc'
+C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm(12): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\avrasm\inc\M328PBDEF.inc'
                                  
                                  //***************************************************************************
                                  
@@ -1549,15 +1549,17 @@ C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm(10): Including 
                                  
                                  
                                  
-                                 // Universidad del Valle de Guatemala
-                                 // IE2023: Programación de Microcontroladores
-                                 // Autor: Ruben Granados
-                                 // Proyecto: lab_2
-                                 // Archivo: lab_2.asm
-                                 // Hardware: ATMEGA328P
-                                 // Created: 10/02/2024 
+                                 /*
+                                 * LAB2.asm
+                                 *
+                                 * Creado: 07/02/2026 11:09:11
+                                 * Autor : Samira Hernández
+                                 * Descripción: Contador de 4 bist (0-F), implementado a un display de 7 segmentos ánodo, utilizando dos botones para incrementar y decrementar. 
+                                 */
                                  //***************************************************************************
-                                 .include "M328PBDEF.inc"
+                                 
+                                 // Encabezado (Definición de Registros, Variables y Constantes)
+                                 .include "M328PBDEF.inc"		// Include definitions specific to ATMega328P
                                  
                                  
                                  ;*************************************************************************
@@ -1591,96 +1593,225 @@ C:\Users\WSami\OneDrive\Documents\GitHub\LAB2\LAB2\LAB2\main.asm(10): Including 
                                  .cseg
                                  .org 0x00
                                  
+                                 /****************************************/
                                  ;================ STACK =================
-000000 ef0f                      LDI R16, LOW(RAMEND)
-000001 bf0d                      OUT SPL, R16
-000002 e008                      LDI R16, HIGH(RAMEND)
-000003 bf0e                      OUT SPH, R16
+000000 ef0f                      	LDI R16, LOW(RAMEND)
+000001 bf0d                      	OUT SPL, R16
+000002 e008                      	LDI R16, HIGH(RAMEND)
+000003 bf0e                      	OUT SPH, R16
+                                 /****************************************/
                                  
                                  ;================ TABLA ANODO COMUN =================
                                  T7S:
 000004 7940
-000005 3024                      .DB 0x40,0x79,0x24,0x30
+000005 3024                      	.DB 0x40,0x79,0x24,0x30		//0, 1, 2, 3
 000006 1219
-000007 7802                      .DB 0x19,0x12,0x02,0x78
+000007 7802                      	.DB 0x19,0x12,0x02,0x78		//4, 5, 6, 7
 000008 1000
-000009 0308                      .DB 0x00,0x10,0x08,0x03
+000009 0308                      	.DB 0x00,0x10,0x08,0x03		//8, 9, A, b
 00000a 2146
-00000b 0e06                      .DB 0x46,0x21,0x06,0x0E
+00000b 0e06                      	.DB 0x46,0x21,0x06,0x0E		// C, d, E, F
                                  
+                                 /****************************************/
                                  ;================ SETUP =================
                                  SETUP:
                                  
+00000c 940e 0073                 	CALL INIT_T0		//Inicialización de Timer0
+                                 
+00000e e040                      	LDI R20, 0			//Contador base
+00000f e030                      	LDI R19, 0			//Contador binario
+000010 e070                      	LDI R23, 0			//Bandera alarma
+000011 e06f                      	LDI R22, 15			//Máximo
+000012 e080                      	LDI R24, 0			//Mínimo 
+                                 
+                                 
                                  ; -------- BOTONES PB1 y PB2 --------
-00000c 9821                      cbi DDRB, 1          ; PB1 entrada
-00000d 9822                      cbi DDRB, 2          ; PB2 entrada
-00000e 9a29                      sbi PORTB, 1         ; pull-up
-00000f 9a2a                      sbi PORTB, 2         ; pull-up
+000013 e006                      	LDI R16, 0b00000110
+000014 b905                      	OUT PORTB, R16
                                  
-                                 ; -------- DISPLAY --------
-000010 e30f                      ldi R16, 0b00111111
-000011 b907                      out DDRC, R16        ; PC0–PC5 salida (a–f)
+                                 ;----------PRESCALER-----------------
+000015 e800                      	LDI R16, (1<<CLKPCE)		//Permitir cambio de prescaler
+000016 9300 0061                 	STS CLKPR, R16
+000018 e007                      	LDI R16, 0b0000_0111		; 
+000019 9300 0061                 	STS CLKPR, R16	
                                  
-000012 9a57                      sbi DDRD, 7          ; PD7 salida (g)
+                                 ; ------------- LEDs ---------------
+                                 ; PD0–PD3 = LEDs contador binario
+                                 ; PD6 = LED alarma
+                                 ; PD7 = segmento g del display
+00001b ef0f                      	LDI R16, 0b11111111
+00001c b90a                      	OUT DDRD, R16           // Todo PORTD como salida
                                  
-                                 ; -------- VARIABLE --------
-000013 e030                      ldi R19, 0           ; contador
+                                 ; ------------- DISPLAY -------------
+                                 ; PC0–PC5 = segmentos a–f
+00001d e70f                      	LDI R16, 0b01111111
+00001e b907                      	OUT DDRC, R16           // Configurar como salida
+00001f 9a57                      	SBI DDRD, 7             // PD7 como salida (segmento g)
                                  
-                                 ;================ LOOP =================
+                                 ; ------------- PUNTERO Z DEL DISPLAY -------------
+000020 e020                      	LDI R18, 0              // Código actual del display
+000021 e050                      	LDI R21, 0              // Valor seleccionado con botones
+                                 
+000022 e0f0                      	LDI ZH, HIGH(T7S << 1)  // Apuntar a tabla en memoria Flash
+000023 e0e8                          LDI ZL, LOW(T7S << 1)
+000024 0fe2                          ADD ZL, R18
+000025 9124                          LPM R18, Z             // Cargar primer valor (0)
+                                 /****************************************/
+                                 
+                                 /****************************************/
                                  LOOP:
+                                 ;================ LOOP =================
+                                 ; ------------- MOSTRAR EN DISPLAY ---------------
+                                 ; a–f por PORTC
+000026 2f02                      	MOV R16, R18
+000027 730f                      	ANDI R16, 0b00111111
+000028 b908                      	OUT PORTC, R16
                                  
-                                 ; Cargar valor de tabla
-000014 2f23                      mov R18, R19
-000015 e0f0                      ldi ZH, HIGH(T7S<<1)
-000016 e0e8                      ldi ZL, LOW(T7S<<1)
-000017 0fe2                      add ZL, R18
-000018 9124                      lpm R18, Z
+                                 ; g por PD7
+000029 fd26                      	SBRC R18, 6
+00002a 9a5f                      	SBI PORTD, 7
                                  
-                                 ; Mostrar a–f en PORTC
-000019 b928                      out PORTC, R18
+00002b ff26                      	SBRS R18, 6
+00002c 985f                      	CBI PORTD, 7
                                  
-                                 ; Mostrar segmento g (bit6)
-00001a fd26                      sbrc R18, 6
-00001b 9a5f                      sbi PORTD, 7
-00001c ff26                      sbrs R18, 6
-00001d 985f                      cbi PORTD, 7
+                                 ; ------------- LECTURA BOTONES ---------------
+00002d b103                      	IN R16, PINB
+00002e ff02                      	SBRS R16, 2          // Si PB2 presionado
+00002f c019                      	RJMP DB_1            // Ir a antirrebote incremento
                                  
-                                 ; -------- Leer botones --------
-00001e b103                      in R16, PINB
+000030 b113                      	IN R17, PINB
+000031 ff11                      	SBRS R17, 1          // Si PB1 presionado
+000032 c01d                      	RJMP DB_2            // Ir a antirrebote decremento
                                  
-                                 ; Botón PB2 (D10) ? Incrementa
-00001f ff02                      sbrs R16, 2
-000020 c003                      rjmp DB_INC
+                                 ; ------------- TIMER0 ---------------
+000033 b305                      	IN R16, TIFR0
+000034 ff01                      	SBRS R16, OCF0A      // Esperar comparación
+000035 cff0                      	RJMP LOOP 
                                  
-                                 ; Botón PB1 (D9) ? Decrementa
-000021 ff01                      sbrs R16, 1
-000022 c009                      rjmp DB_DEC
+000036 9aa9                      	SBI TIFR0, OCF0A     // Limpiar bandera
+000037 9543                      	INC R20              // Incrementa base 100ms
+000038 3041                      	CPI R20, 1
+000039 f761                      	BRNE LOOP            // Si no llega a 1, salir
                                  
-000023 cff0                      rjmp LOOP
+00003a 2744                      	CLR R20
+00003b 9a1b                      	SBI PINB, 3          // Toggle prueba
                                  
-                                 ;================ ANTIREBOTE + INC =================
-                                 DB_INC:
-000024 e604                      ldi R16, 100
-                                 D1:
-000025 950a                      dec R16
-000026 f7f1                      brne D1
-000027 9b1a                      sbis PINB, 2
-000028 cffb                      rjmp DB_INC
-000029 9533                      inc R19
-00002a 703f                      andi R19, 0x0F
-00002b cfe8                      rjmp LOOP
+                                 ; -------- BLOQUEO SI VALOR = 0 --------
+00003c 2355                      TST R21                // ¿Display está en 0?
+00003d f419                      BRNE CONTAR_NORMAL
                                  
-                                 ;================ ANTIREBOTE + DEC =================
-                                 DB_DEC:
-00002c e604                      ldi R16, 100
-                                 D2:
-00002d 950a                      dec R16
-00002e f7f1                      brne D2
-00002f 9b19                      sbis PINB, 1
-000030 cffb                      rjmp DB_DEC
-000031 953a                      dec R19
-000032 703f                      andi R19, 0x0F
-000033 cfe0                      rjmp LOOP
+00003e 9a5e                      SBI PORTD, 6           // Encender LED alarma
+00003f 2733                      CLR R19                // Reiniciar contador
+000040 cfe5                      RJMP LOOP              // No contar
+                                 
+                                 CONTAR_NORMAL:
+000041 1336                      CPSE R19, R22	
+000042 940e 0067                 CALL LEDS              // Incrementar LEDs
+                                 
+000044 e030                      LDI R19, 0             // Reinicia si llegó a 15
+000045 b93b                      OUT PORTD, R19
+                                 
+000046 1378                      CPSE R23, R24
+000047 9a5e                      SBI PORTD, 6           // Activar alarma si corresponde
+                                 
+000048 cfdd                      RJMP LOOP 
+                                 /****************************************/
+                                 
+                                 /****************************************/
+                                 // SUBRUTINAS
+                                 
+                                 ; ------------- ANTIREBOTE ---------------
+                                 DB_1:
+000049 e604                      	LDI R16, 100
+                                 delay1:	
+00004a 950a                      	DEC R16
+00004b f7f1                      	BRNE delay1
+00004c 9b1a                      	SBIS PINB, 2
+00004d cffb                      	RJMP DB_1
+00004e 940e 0057                 	CALL INCREMENTAR
+                                 
+                                 DB_2:
+000050 e614                      	LDI R17, 100
+                                 delay2:	
+000051 951a                      	DEC R17
+000052 f7f1                      	BRNE delay2
+000053 9b19                      	SBIS PINB, 1
+000054 cffb                      	RJMP DB_2
+000055 940e 005f                 	CALL DECREMENTAR	
+                                 
+                                 ; ------------- INCREMENTAR ---------------
+                                 INCREMENTAR: 
+000057 1356                      	CPSE R21, R22
+000058 9553                      	INC R21              // Aumenta valor
+000059 2f25                      	MOV R18, R21
+                                 
+00005a e0f0                      	LDI ZH, HIGH(T7S << 1)
+00005b e0e8                          LDI ZL, LOW(T7S << 1)
+00005c 0fe2                          ADD ZL, R18
+00005d 9124                          LPM R18, Z          // Actualiza display
+                                 
+00005e cfc7                      	RJMP LOOP 
+                                 
+                                 ; ------------- DECREMENTAR ---------------
+                                 DECREMENTAR: 
+00005f 1358                      	CPSE R21, R24
+000060 955a                      	DEC R21              // Disminuye valor
+000061 2f25                      	MOV R18, R21
+                                 
+000062 e0f0                      	LDI ZH, HIGH(T7S << 1)
+000063 e0e8                          LDI ZL, LOW(T7S << 1)
+000064 0fe2                          ADD ZL, R18
+000065 9124                          LPM R18, Z          // Actualiza display
+                                 
+000066 cfbf                      	RJMP LOOP 
+                                 
+                                 ; ------------- LEDS BINARIOS ---------------
+                                 LEDS: 
+000067 9533                      	INC R19              // Incrementar contador
+000068 0f33                      	LSL R19
+000069 0f33                      	LSL R19
+00006a b93b                      	OUT PORTD, R19       // Mostrar en PD0–PD3
+                                 
+00006b 1378                      	CPSE R23, R24
+00006c 9a5e                      	SBI PORTD, 6         // Activar alarma
+                                 
+00006d 9536                      	LSR R19
+00006e 9536                      	LSR R19
+                                 
+00006f 1335                      	CPSE R19, R21        // ¿Llegó al valor seleccionado?
+000070 cfb5                      	RJMP LOOP 
+                                 
+000071 940e 007c                 	CALL ALARMA 
+                                 
+                                 ; ------------- TIMER0 ---------------
+                                 Init_T0: 
+000073 e000                      	LDI R16, 0
+000074 bd06                      	OUT TCNT0, R16
+                                 
+000075 e90c                      	LDI R16, 156
+000076 bd07                      	OUT OCR0A, R16
+                                 
+000077 e002                          LDI R16, (1 << WGM01)
+000078 bd04                          OUT TCCR0A, R16      // Modo CTC
+                                 
+000079 e005                          LDI R16, (1 << CS02)|(1 << CS00)
+00007a bd05                          OUT TCCR0B, R16      // Prescaler 1024
+                                 
+00007b 9508                          RET
+                                 
+                                 ; ------------- ALARMA ---------------
+                                 ALARMA: 
+00007c 1378                      	CPSE R23, R24
+00007d 940e 0083                 	CALL APAGAR_ALARMA
+                                 
+00007f e07f                      	LDI R23, 15
+000080 9a5e                      	SBI PORTD, 6          // Encender LED alarma
+000081 e03f                      	LDI R19, 15
+000082 cfa3                      	RJMP LOOP 
+                                 
+                                 APAGAR_ALARMA: 
+000083 e070                      	LDI R23, 0 
+000084 e03f                      	LDI R19, 15
 
 
 RESOURCE USE INFORMATION
@@ -1698,39 +1829,39 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega328PB" register use summary:
-x  :   0 y  :   0 z  :   1 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
+x  :   0 y  :   0 z  :   3 r0 :   0 r1 :   0 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  13 r17:   0 r18:   6 r19:   6 r20:   0 
-r21:   0 r22:   0 r23:   0 r24:   0 r25:   0 r26:   0 r27:   0 r28:   0 
-r29:   0 r30:   2 r31:   1 
-Registers used: 6 out of 35 (17.1%)
+r13:   0 r14:   0 r15:   0 r16:  31 r17:   4 r18:  12 r19:  14 r20:   4 
+r21:   9 r22:   3 r23:   6 r24:   5 r25:   0 r26:   0 r27:   0 r28:   0 
+r29:   0 r30:   6 r31:   3 
+Registers used: 12 out of 35 (34.3%)
 
 "ATmega328PB" instruction use summary:
-.lds  :   0 .sts  :   0 adc   :   0 add   :   1 adiw  :   0 and   :   0 
-andi  :   2 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+.lds  :   0 .sts  :   0 adc   :   0 add   :   3 adiw  :   0 and   :   0 
+andi  :   1 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :   0 brlt  :   0 brmi  :   0 
-brne  :   2 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
-brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   3 cbr   :   0 
-clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
+brne  :   4 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
+brvs  :   0 bset  :   0 bst   :   0 call  :   6 cbi   :   1 cbr   :   0 
+clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   2 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :   0 cpse  :   0 dec   :   3 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   1 inc   :   1 jmp   :   0 
-ld    :   0 ldd   :   0 ldi   :   8 lds   :   0 lpm   :   2 lsl   :   0 
-lsr   :   0 mov   :   1 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   0 nop   :   0 or    :   0 ori   :   0 out   :   4 pop   :   0 
-push  :   0 rcall :   0 ret   :   0 reti  :   0 rjmp  :   7 rol   :   0 
-ror   :   0 sbc   :   0 sbci  :   0 sbi   :   4 sbic  :   0 sbis  :   2 
-sbiw  :   0 sbr   :   0 sbrc  :   1 sbrs  :   3 sec   :   0 seh   :   0 
+cpi   :   1 cpse  :   7 dec   :   3 eor   :   0 fmul  :   0 fmuls :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   3 inc   :   3 jmp   :   0 
+ld    :   0 ldd   :   0 ldi   :  31 lds   :   0 lpm   :   6 lsl   :   2 
+lsr   :   2 mov   :   3 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
+neg   :   0 nop   :   0 or    :   0 ori   :   0 out   :  12 pop   :   0 
+push  :   0 rcall :   0 ret   :   1 reti  :   0 rjmp  :  12 rol   :   0 
+ror   :   0 sbc   :   0 sbci  :   0 sbi   :   8 sbic  :   0 sbis  :   2 
+sbiw  :   0 sbr   :   0 sbrc  :   1 sbrs  :   4 sec   :   0 seh   :   0 
 sei   :   0 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :   0 
-sub   :   0 subi  :   0 swap  :   0 tst   :   0 wdr   :   0 
-Instructions used: 16 out of 113 (14.2%)
+sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :   2 
+sub   :   0 subi  :   0 swap  :   0 tst   :   1 wdr   :   0 
+Instructions used: 25 out of 113 (22.1%)
 
 "ATmega328PB" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000068     88     16    104   32768   0.3%
+[.cseg] 0x000000 0x00010c    252     16    268   32768   0.8%
 [.dseg] 0x000100 0x000100      0      0      0    2048   0.0%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
